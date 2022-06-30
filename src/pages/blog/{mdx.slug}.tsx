@@ -12,6 +12,8 @@ type Props = {
         date: string;
         hero_image: any;
         hero_image_alt: string;
+        hero_image_credit_link: string;
+        hero_image_credit_text: string;
       };
       body: string;
     };
@@ -19,13 +21,20 @@ type Props = {
 };
 
 const BlogPost: React.FC<Props> = ({ data }) => {
-  // const image = getImage(data.mdx.frontmatter.hero_image);
-  const image = data.mdx.frontmatter.hero_image;
+  const image = getImage(data.mdx.frontmatter.hero_image);
 
   return (
     <Layout pageTitle={data.mdx.frontmatter.title}>
       <p>Posted: {data.mdx.frontmatter.date}</p>
-      <GatsbyImage image={image} alt={data.mdx.frontmatter.hero_image_alt} />
+      {image && (
+        <GatsbyImage image={image} alt={data.mdx.frontmatter.hero_image_alt} />
+      )}
+      <p>
+        Photo Credit:{" "}
+        <a href={data.mdx.frontmatter.hero_image_credit_link}>
+          {data.mdx.frontmatter.hero_image_credit_text}
+        </a>
+      </p>
       <MDXRenderer>{data.mdx.body}</MDXRenderer>
     </Layout>
   );
@@ -41,7 +50,11 @@ export const query = graphql`
         hero_image_alt
         hero_image_credit_link
         hero_image_credit_text
-        hero_image
+        hero_image {
+          childImageSharp {
+            gatsbyImageData
+          }
+        }
       }
     }
   }
